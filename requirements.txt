@@ -1,0 +1,64 @@
+# Core AI/ML
+openai>=1.12.0
+anthropic>=0.18.0
+
+# Agent Framework
+langgraph>=0.0.20
+langchain>=0.1.0
+langchain-openai>=0.0.5
+
+# Video Processing
+moviepy>=1.0.3
+ffmpeg-python>=0.2.0
+pillow>=10.2.0
+
+# Audio/TTS
+elevenlabs>=0.2.26
+pydub>=0.25.1
+
+# Web Scraping & Data Collection
+yt-dlp>=2024.1.0
+instaloader>=4.10
+pytrends>=4.9.2
+beautifulsoup4>=4.12.0
+selenium>=4.16.0
+requests>=2.31.0
+
+# Database & Memory
+sqlalchemy>=2.0.25
+chromadb>=0.4.22
+faiss-cpu>=1.7.4
+psycopg2-binary>=2.9.9
+
+# Social Media APIs
+google-api-python-client>=2.115.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
+# Task Scheduling
+celery>=5.3.6
+redis>=5.0.1
+apscheduler>=3.10.4
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.5.3
+pydantic-settings>=2.1.0
+tenacity>=8.2.3
+loguru>=0.7.2
+
+# API Framework (optional web UI)
+fastapi>=0.109.0
+uvicorn>=0.27.0
+python-multipart>=0.0.6
+
+# Testing
+pytest>=7.4.4
+pytest-asyncio>=0.23.3
+pytest-mock>=3.12.0
+httpx>=0.26.0
+
+# Development
+black>=24.1.0
+ruff>=0.1.14
+mypy>=1.8.0
