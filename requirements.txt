@@ -1,11 +1,17 @@
 # Core AI/ML
-openai>=1.12.0
-anthropic>=0.18.0
+openai>=1.12.0  # Optional - can use free alternatives below
+anthropic>=0.18.0  # Optional
+
+# FREE AI/ML Alternatives
+ollama>=0.1.0  # FREE - Local LLM (Llama, Mistral, etc.)
+groq>=0.4.0  # FREE - Fast cloud inference
+huggingface-hub>=0.20.0  # FREE - Hugging Face models
+edge-tts>=6.1.0  # FREE - Microsoft Edge TTS (replaces OpenAI TTS)
 
 # Agent Framework
 langgraph>=0.0.20
 langchain>=0.1.0
-langchain-openai>=0.0.5
+langchain-openai>=0.0.5  # Optional if using free LLMs
 
 # Video Processing
 moviepy>=1.0.3
@@ -13,7 +19,7 @@ ffmpeg-python>=0.2.0
 pillow>=10.2.0
 
 # Audio/TTS
-elevenlabs>=0.2.26
+elevenlabs>=0.2.26  # Optional - Edge-TTS is free alternative
 pydub>=0.25.1
 
 # Web Scraping & Data Collection
