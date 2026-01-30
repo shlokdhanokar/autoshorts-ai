@@ -32,6 +32,14 @@ class MediaGenerationAgent(BaseAgent):
         self.pexels_api_key = settings.pexels_api_key
         self.pixabay_api_key = settings.pixabay_api_key
         self.stability_api_key = settings.stability_api_key
+        self.openai_api_key = settings.openai_api_key
+        
+        # Initialize OpenAI client for DALL-E fallback
+        if self.openai_api_key:
+            from openai import AsyncOpenAI
+            self.openai_client = AsyncOpenAI(api_key=self.openai_api_key)
+        else:
+            self.openai_client = None
         
         # Asset storage directory
         self.assets_dir = Path(settings.assets_dir)
@@ -149,8 +157,11 @@ class MediaGenerationAgent(BaseAgent):
         scene_id = scene["scene_id"]
         
         if not self.pexels_api_key:
-            log.warning("Pexels API key not configured, using placeholder")
-            return self._create_placeholder_asset(scene_id, "video", output_dir)
+            log.info("Pexels key missing. Falling back to DALL-E 3 for visuals.")
+            # Fallback to AI image generation instead of stock video
+            # DALL-E is static image but better than placeholder
+            scene["ai_prompt"] = f"Cinematic vertical shot, {search_query}, high quality, photorealistic, 4k"
+            return await self._generate_ai_image(scene, output_dir)
         
         # TODO: Implement actual Pexels API call
         # For now, return mock data
@@ -190,8 +201,9 @@ class MediaGenerationAgent(BaseAgent):
         scene_id = scene["scene_id"]
         
         if not self.pexels_api_key:
-            log.warning("Pexels API key not configured, using placeholder")
-            return self._create_placeholder_asset(scene_id, "image", output_dir)
+            log.info("Pexels key missing. Falling back to DALL-E 3 for image.")
+            scene["ai_prompt"] = f"Cinematic vertical photo, {search_query}, detailed, photorealistic, 8k"
+            return await self._generate_ai_image(scene, output_dir)
         
         # TODO: Implement actual Pexels API call
         log.debug(f"Fetching stock image: {search_query}")
@@ -214,7 +226,7 @@ class MediaGenerationAgent(BaseAgent):
         output_dir: Path
     ) -> Optional[Dict[str, Any]]:
         """
-        Generate AI image using DALL-E or Stability AI.
+        Generate AI image using DALL-E 3 (OpenAI fallback).
         
         Args:
             scene: Scene specification
@@ -226,21 +238,45 @@ class MediaGenerationAgent(BaseAgent):
         ai_prompt = scene.get("ai_prompt", "abstract artistic background")
         scene_id = scene["scene_id"]
         
-        # TODO: Implement actual AI image generation
-        # Using OpenAI DALL-E or Stability AI
-        log.debug(f"Generating AI image: {ai_prompt}")
+        if not self.openai_client:
+            log.warning("OpenAI API key not configured, cannot generate AI image")
+            return self._create_placeholder_asset(scene_id, "image", output_dir)
+            
+        log.info(f"Generating DALL-E 3 image for scene {scene_id}: {ai_prompt[:50]}...")
         
-        await asyncio.sleep(0.1)
-        
-        asset_path = output_dir / f"scene_{scene_id}_ai.png"
-        
-        return {
-            "scene_id": scene_id,
-            "type": "ai_image",
-            "path": str(asset_path),
-            "source": "ai_generated",
-            "prompt": ai_prompt
-        }
+        try:
+            response = await self.openai_client.images.generate(
+                model="dall-e-3",
+                prompt=ai_prompt,
+                size="1024x1792",  # Vertical aspect ratio (approx 9:16)
+                quality="standard",
+                n=1,
+            )
+            
+            image_url = response.data[0].url
+            
+            # Download image
+            async with aiohttp.ClientSession() as session:
+                async with session.get(image_url) as resp:
+                    if resp.status == 200:
+                        image_data = await resp.read()
+                        asset_path = output_dir / f"scene_{scene_id}_dalle.png"
+                        with open(asset_path, "wb") as f:
+                            f.write(image_data)
+                            
+                        return {
+                            "scene_id": scene_id,
+                            "type": "ai_image",
+                            "path": str(asset_path),
+                            "source": "dall-e-3",
+                            "prompt": ai_prompt
+                        }
+            
+            return None
+
+        except Exception as e:
+            log.error(f"DALL-E generation failed: {str(e)}")
+            return self._create_placeholder_asset(scene_id, "image", output_dir)
     
     async def _generate_ai_video(
         self,

@@ -143,7 +143,19 @@ class TrendResearchAgent(BaseAgent):
         ]
         
         if niche:
-            return [t for t in mock_trends if t.niche == niche]
+            # Flexible matching (case-insensitive)
+            filtered_trends = [t for t in mock_trends if t.niche.lower() in niche.lower() or niche.lower() in t.niche.lower()]
+            if filtered_trends:
+                return filtered_trends
+            
+            # If no match, return generic business/finance trends if related
+            if "business" in niche.lower() or "money" in niche.lower():
+                return [t for t in mock_trends if t.niche in ["finance", "self-improvement"]]
+            
+            # Fallback: Return all trends but mark them as potentially less relevant
+            log.info(f"No specific trends found for {niche}, returning general trends")
+            return mock_trends
+            
         return mock_trends
     
     async def _scrape_instagram_trends(self, niche: Optional[str] = None) -> List[TrendingTopic]:

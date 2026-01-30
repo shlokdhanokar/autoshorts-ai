@@ -25,13 +25,6 @@ class VisualScene:
 class VisualPlanningAgent(BaseAgent):
     """
     Agent responsible for planning visual content for scripts.
-    
-    Responsibilities:
-    - Map script segments to visual types
-    - Generate search queries for stock footage
-    - Generate prompts for AI image/video generation
-    - Plan transitions and pacing
-    - Ensure 9:16 aspect ratio compliance
     """
     
     def __init__(self, agent_id: str = "visual_planning_001"):
@@ -39,19 +32,7 @@ class VisualPlanningAgent(BaseAgent):
         super().__init__(agent_id=agent_id, agent_type="visual_planning")
     
     async def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Execute visual planning.
-        
-        Args:
-            input_data: Input data containing:
-                - script: Full script text
-                - scenes: List of script scenes with timestamps
-                - niche: Content niche
-                - tone: Content tone
-                
-        Returns:
-            Dictionary with visual storyboard
-        """
+        """Execute visual planning."""
         script = input_data["script"]
         scenes = input_data["scenes"]
         niche = input_data.get("niche", "general")
@@ -63,10 +44,13 @@ class VisualPlanningAgent(BaseAgent):
         visual_scenes = []
         
         for i, scene in enumerate(scenes):
+            # Support both 'text' and 'audio_text' keys
+            text_content = scene.get("text") or scene.get("audio_text", "")
+            
             visual_scene = await self._plan_scene_visuals(
                 scene_id=i + 1,
-                scene_text=scene["text"],
-                visual_cue=scene.get("visual_cue", ""),
+                scene_text=text_content,
+                visual_cue=scene.get("visual_desc") or scene.get("visual_cue", ""),
                 timestamp=scene.get("timestamp", ""),
                 niche=niche,
                 tone=tone
@@ -100,23 +84,14 @@ class VisualPlanningAgent(BaseAgent):
         niche: str,
         tone: str
     ) -> VisualScene:
-        """
-        Plan visuals for a single scene.
-        
-        Args:
-            scene_id: Scene identifier
-            scene_text: Text content of the scene
-            visual_cue: Suggested visual cue
-            timestamp: Scene timestamp
-            niche: Content niche
-            tone: Content tone
-            
-        Returns:
-            VisualScene object
-        """
-        # Parse duration from timestamp (e.g., "0-3s" -> 3 seconds)
+        """Plan visuals for a single scene."""
+        # Parse duration
         duration = self._parse_duration(timestamp)
         
+        # Cap duration for more dynamic pacing (max 5s per visual)
+        if duration > 5.0:
+            duration = 5.0
+            
         # Determine visual type based on content
         visual_type, search_query, ai_prompt = self._determine_visual_strategy(
             scene_text, visual_cue, niche, scene_id
@@ -135,6 +110,8 @@ class VisualPlanningAgent(BaseAgent):
         """Parse duration from timestamp string."""
         try:
             # Format: "0-3s" or "3-10s"
+            if not timestamp:
+                return 5.0
             parts = timestamp.replace('s', '').split('-')
             if len(parts) == 2:
                 return float(parts[1]) - float(parts[0])
@@ -149,12 +126,7 @@ class VisualPlanningAgent(BaseAgent):
         niche: str,
         scene_id: int
     ) -> tuple[str, Optional[str], Optional[str]]:
-        """
-        Determine the best visual strategy for a scene.
-        
-        Returns:
-            Tuple of (visual_type, search_query, ai_prompt)
-        """
+        """Determine the best visual strategy for a scene."""
         text_lower = scene_text.lower()
         cue_lower = visual_cue.lower()
         
@@ -189,20 +161,7 @@ class VisualPlanningAgent(BaseAgent):
         return ("stock_video", search_query, None)
     
     def _generate_stock_query(self, scene_text: str, niche: str, media_type: str) -> str:
-        """
-        Generate search query for stock footage.
-        
-        Args:
-            scene_text: Scene text
-            niche: Content niche
-            media_type: "video" or "image"
-            
-        Returns:
-            Search query string
-        """
-        # Extract key nouns and verbs (simplified)
-        # In production, use NLP for better extraction
-        
+        """Generate search query for stock footage."""
         keywords = []
         
         # Add niche-related keywords
@@ -234,17 +193,7 @@ class VisualPlanningAgent(BaseAgent):
         return query.strip() or f"{niche} content"
     
     def _generate_ai_prompt(self, scene_text: str, niche: str) -> str:
-        """
-        Generate prompt for AI image/video generation.
-        
-        Args:
-            scene_text: Scene text
-            niche: Content niche
-            
-        Returns:
-            AI generation prompt
-        """
-        # Create descriptive prompt based on scene content
+        """Generate prompt for AI image/video generation."""
         base_prompt = scene_text[:100]  # Use first 100 chars as base
         
         # Add style modifiers
@@ -262,15 +211,7 @@ class VisualPlanningAgent(BaseAgent):
         return prompt
     
     def _plan_transitions(self, scenes: List[VisualScene]) -> List[Dict[str, str]]:
-        """
-        Plan transitions between scenes.
-        
-        Args:
-            scenes: List of visual scenes
-            
-        Returns:
-            List of transition specifications
-        """
+        """Plan transitions between scenes."""
         transitions = []
         
         for i in range(len(scenes) - 1):

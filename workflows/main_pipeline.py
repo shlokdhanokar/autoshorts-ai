@@ -111,13 +111,14 @@ class AutoShortsWorkflow:
                 "tone": "educational"
             })
             
-            script = script_result["script"]
-            scenes = script_result["scenes"]
+            script_data = script_result["script"]
+            script_content = script_data.get("script_content", "")
+            scenes = script_data.get("scenes", [])
             
             # Step 3: Visual Planning
             log.info("Step 3/8: Planning visuals...")
             visual_result = await self.visual_agent.run({
-                "script": script,
+                "script": script_content,
                 "scenes": scenes,
                 "niche": niche,
                 "tone": "educational"
@@ -138,7 +139,7 @@ class AutoShortsWorkflow:
             # Step 5: Voiceover Generation
             log.info("Step 5/8: Generating voiceover...")
             voiceover_result = await self.voiceover_agent.run({
-                "script": script,
+                "script": script_content,
                 "niche": niche,
                 "target_emotion": target_emotion,
                 "video_id": video_id,
@@ -165,7 +166,7 @@ class AutoShortsWorkflow:
             log.info("Step 7/8: Generating captions and metadata...")
             metadata_result = await self.caption_agent.run({
                 "topic": topic,
-                "script": script,
+                "script": script_data,
                 "niche": niche,
                 "target_emotion": target_emotion,
                 "video_id": video_id

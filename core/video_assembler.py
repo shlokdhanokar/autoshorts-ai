@@ -7,15 +7,30 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 from datetime import datetime
 
+import PIL.Image
+
+# Patch PIL.Image.ANTIALIAS for MoviePy compatibility (Pillow 10+ removed it)
+if not hasattr(PIL.Image, 'ANTIALIAS'):
+    PIL.Image.ANTIALIAS = PIL.Image.LANCZOS
+
 try:
     from moviepy.editor import (
         VideoFileClip, ImageClip, AudioFileClip, TextClip,
-        CompositeVideoClip, concatenate_videoclips, ColorClip
+        CompositeVideoClip, concatenate_videoclips, ColorClip,
+        CompositeAudioClip
     )
     from moviepy.video.fx import resize, fadein, fadeout
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False
+    # Define dummy classes for type hints if MoviePy is missing
+    VideoFileClip = Any
+    ImageClip = Any
+    AudioFileClip = Any
+    TextClip = Any
+    CompositeVideoClip = Any
+    ColorClip = Any
+    CompositeAudioClip = Any
 
 from config import log
 
@@ -132,21 +147,37 @@ class VideoAssembler:
             if not asset_path or not Path(asset_path).exists():
                 # Create placeholder clip
                 clip = self._create_placeholder_clip(duration)
-            elif "video" in asset_type:
-                clip = VideoFileClip(str(asset_path))
-                clip = clip.subclip(0, min(duration, clip.duration))
-            elif "image" in asset_type:
-                clip = ImageClip(str(asset_path), duration=duration)
-            elif asset_type == "text_overlay":
-                clip = self._create_text_clip(duration)
             else:
                 clip = self._create_placeholder_clip(duration)
             
-            # Resize to fit 9:16
-            clip = clip.resize((self.width, self.height))
+            # Resize
+            if clip.size != (self.width, self.height):
+                 clip = clip.resize((self.width, self.height))
+            
             clips.append(clip)
         
-        return clips
+        if not clips:
+             return [self._create_placeholder_clip(total_duration)]
+
+        # Ensure clips cover total duration
+        final_clips = []
+        current_duration = 0.0
+        
+        # Add clips until we exceed audio duration (max 100 loops to prevent infinite hang)
+        loop_count = 0
+        while current_duration < total_duration and loop_count < 100:
+            loop_count += 1
+            for clip in clips:
+                 # Check if we're done
+                 if current_duration >= total_duration:
+                     break
+
+                 # Append clip
+                 new_clip = clip.copy()
+                 final_clips.append(new_clip)
+                 current_duration += new_clip.duration
+        
+        return final_clips
     
     def _create_placeholder_clip(self, duration: float) -> ColorClip:
         """Create a placeholder color clip."""

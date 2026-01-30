@@ -13,15 +13,24 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
     # LLM Configuration
-    openai_api_key: str = Field(..., description="OpenAI API key")
+    openai_api_key: str | None = Field(None, description="OpenAI API key")
     anthropic_api_key: str | None = Field(None, description="Anthropic API key (optional)")
-    llm_model: str = Field("gpt-4-turbo-preview", description="Default LLM model")
+    llm_provider: Literal["openai", "ollama", "groq", "huggingface"] = Field("openai", description="LLM provider")
+    llm_model: str = Field("gpt-4o", description="Default LLM model")
     llm_temperature: float = Field(0.7, ge=0.0, le=2.0)
+    
+    # Ollama Settings
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3"
+    
+    # Groq Settings
+    groq_api_key: str | None = None
+    groq_model: str = "llama3-70b-8192"
     
     # TTS Configuration
     elevenlabs_api_key: str | None = Field(None, description="ElevenLabs API key")
     elevenlabs_voice_id: str | None = Field(None, description="Default voice ID")
-    tts_provider: Literal["elevenlabs", "openai"] = Field("openai", description="TTS provider")
+    tts_provider: Literal["elevenlabs", "openai", "edge_tts"] = Field("openai", description="TTS provider")
     
     # Media Generation
     stability_api_key: str | None = Field(None, description="Stability AI API key")
@@ -50,7 +59,12 @@ class Settings(BaseSettings):
     
     # Cost Controls
     max_daily_api_cost: float = Field(50.0, ge=0.0)
+    cost_limit_daily: float = Field(50.0, ge=0.0)  # Alias for max_daily_api_cost
     enable_cost_tracking: bool = True
+    
+    # Concurrency
+    max_concurrent_videos: int = Field(3, ge=1, le=10)
+    max_concurrent_agents: int = Field(3, ge=1, le=10)  # Alias for max_concurrent_videos
     
     # Content Settings
     default_niche: str = "self-improvement"
@@ -71,6 +85,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"  # Allow extra fields in .env
     
     @validator("data_dir", "videos_dir", "assets_dir", "cache_dir")
     def ensure_directory_exists(cls, v):

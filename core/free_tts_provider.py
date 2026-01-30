@@ -39,15 +39,16 @@ class FreeTTSProvider:
         if not EDGE_TTS_AVAILABLE:
             log.warning("Edge-TTS not installed. Install with: pip install edge-tts")
         
-        self.default_voice = self.VOICES["male_us"]
+        # Use ChristopherNeural for better storytelling
+        self.default_voice = "en-US-ChristopherNeural"
         log.info("Initialized free TTS provider (Edge-TTS)")
     
-    async def generate_speech(
+    async def generate(
         self,
         text: str,
         output_path: Path,
         voice: Optional[str] = None,
-        rate: str = "+0%",
+        rate: str = "+10%",  # Slightly faster for Shorts energy
         volume: str = "+0%"
     ) -> Path:
         """
