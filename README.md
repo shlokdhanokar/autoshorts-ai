@@ -33,7 +33,6 @@ AutoShorts AI is a fully autonomous multi-agent system that continuously creates
 ```bash
 cd autoshorts_ai
 ```
-
 2. Create a virtual environment:
 ```bash
 python -m venv venv
