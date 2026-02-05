@@ -18,7 +18,6 @@ AutoShorts AI is a fully autonomous multi-agent system that continuously creates
 - **Continuous Learning** from engagement analytics
 
 ## 🚀 Quick Start
-
 ### Prerequisites
 
 - Python 3.11+
