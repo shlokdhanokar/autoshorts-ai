@@ -1,7 +1,6 @@
 # AutoShorts AI
 
 An end-to-end agentic AI system for automated short-form video creation and publishing.
-
 ## 🎯 Overview
 
 AutoShorts AI is a fully autonomous multi-agent system that continuously creates, edits, voices, and publishes high-quality Instagram Reels and YouTube Shorts without human intervention.
