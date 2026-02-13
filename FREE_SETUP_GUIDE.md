@@ -12,7 +12,6 @@ No credit card, no paid APIs, 100% open-source alternatives!
 - **What it does**: Replaces OpenAI for script generation
 - **Quality**: Very good (Llama 3.2, Mistral, etc.)
 - **Setup time**: 5 minutes
-
 ### **2. Edge-TTS - 100% FREE**
 - **Cost**: FREE forever
 - **What it does**: Replaces OpenAI TTS for voiceovers
