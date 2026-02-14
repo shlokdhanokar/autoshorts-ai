@@ -3,7 +3,6 @@
 ## 🎯 Run AutoShorts AI Completely FREE!
 
 No credit card, no paid APIs, 100% open-source alternatives!
-
 ---
 ## 📋 What You Need (All FREE!)
 
