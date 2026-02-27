@@ -19,6 +19,7 @@ AutoShorts AI is a fully autonomous multi-agent system that continuously creates
 ## 🚀 Quick Start
 ### Prerequisites
 
+
 - Python 3.11+
 - OpenAI API key (required)
 - Optional: ElevenLabs, Pexels, Stability AI API keys
