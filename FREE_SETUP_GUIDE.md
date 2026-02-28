@@ -62,7 +62,6 @@ pip install edge-tts ollama groq huggingface-hub
 1. Go to: https://www.pexels.com/api/
 2. Sign up (free)
 3. Get your API key
-
 **Optional - Groq (Faster than local):**
 1. Go to: https://console.groq.com/
 2. Sign up (free)
