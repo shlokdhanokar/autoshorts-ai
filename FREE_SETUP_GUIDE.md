@@ -69,6 +69,8 @@ pip install edge-tts ollama groq huggingface-hub
 
 ### **Step 4: Configure .env (2 min)**
 
+
+
 ```bash
 # Copy the config file
 copy config\.env.example .env
