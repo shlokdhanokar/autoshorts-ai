@@ -8,7 +8,6 @@
 - **Used for**: Script generation, voiceover (TTS), metadata
 - **This is the ONLY required API key!**
 ---
-
 ## 🎁 Free Optional Services
 
 ### **Stock Footage**
