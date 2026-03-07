@@ -12,7 +12,6 @@ This guide provides step-by-step instructions for obtaining the API keys require
 4. Click **+ Create new secret key**.
 5. Copy the key immediately and paste it into your `.env` file as `OPENAI_API_KEY`.
 6. **Note**: New accounts usually get $5 free credit. If you run out, you'll need to add a payment method (it's pay-as-you-go).
-
 ---
 
 ## 🆓 2. Pexels (Free Stock Video/Images)
