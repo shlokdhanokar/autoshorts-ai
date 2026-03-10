@@ -3,7 +3,6 @@
 This guide provides step-by-step instructions for obtaining the API keys required for AutoShorts AI.
 
 --
-
 ## 🚀 1. OpenAI (Essential/Recommended)
 **Used for**: Scripts, Metadata, and High-Quality TTS.
 1. Go to [OpenAI Platform](https://platform.openai.com/).
