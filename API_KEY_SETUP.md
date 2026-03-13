@@ -14,7 +14,6 @@ This guide provides step-by-step instructions for obtaining the API keys require
 ---
 
 
-
 ## 🆓 2. Pexels (Free Stock Video/Images)
 **Used for**: Automatic background footage.
 1. Visit [Pexels API](https://www.pexels.com/api/).
