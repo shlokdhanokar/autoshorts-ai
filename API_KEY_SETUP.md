@@ -13,8 +13,6 @@ This guide provides step-by-step instructions for obtaining the API keys require
 6. **Note**: New accounts usually get $5 free credit. If you run out, you'll need to add a payment method (it's pay-as-you-go).
 ---
 
-
-
 ## 🆓 2. Pexels (Free Stock Video/Images)
 **Used for**: Automatic background footage.
 1. Visit [Pexels API](https://www.pexels.com/api/).
