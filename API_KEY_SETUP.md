@@ -20,7 +20,6 @@ This guide provides step-by-step instructions for obtaining the API keys require
 3. Fill in the application form (Just say "building an AI video automation tool").
 4. Once approved (usually instant), go to your [API dashboard](https://www.pexels.com/api/new/).
 5. Copy your **API Key** and paste it as `PEXELS_API_KEY`.
-
 ---
 
 ## ⚡ 3. Groq (Fast Free Cloud AI)
