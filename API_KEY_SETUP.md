@@ -22,6 +22,7 @@ This guide provides step-by-step instructions for obtaining the API keys require
 5. Copy your **API Key** and paste it as `PEXELS_API_KEY`.
 ---
 
+
 ## ⚡ 3. Groq (Fast Free Cloud AI)
 **Used for**: 100% Free script/metadata generation (alternative to OpenAI).
 1. Go to [Groq Console](https://console.groq.com/).
