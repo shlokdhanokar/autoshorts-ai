@@ -1,7 +1,10 @@
 # AutoShorts AI
 
+[![Build Status](https://github.com/shlokdhanokar/autoshorts-ai/actions/workflows/python-app.yml/badge.svg)](https://github.com/shlokdhanokar/autoshorts-ai/actions)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 An end-to-end agentic AI system for automated short-form video creation and publishing.
-## 🎯 Overview
 
 AutoShorts AI is a fully autonomous multi-agent system that continuously creates, edits, voices, and publishes high-quality Instagram Reels and YouTube Shorts without human intervention.
 
